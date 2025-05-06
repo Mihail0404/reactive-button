@@ -1,23 +1,44 @@
-class Button {
-  count: { value: number };
-  button: HTMLButtonElement;
-  constructor(button: HTMLButtonElement) {
-    this.button = button;
-    this.count = {
-      value: 0,
-    };
-    this.button.textContent = "Count is: " + this.count.value;
-    // this.button.addEventListener("click", () => {
-    //   this.count++;
-    //   this.button.textContent = "Count is: " + this.count;
-    // });
+class RefElements {
+  elements: NodeList;
+  varList: Map<string, Node[]>;
+  constructor(variables: {}) {
+    this.varList = new Map();
+    this.elements = document.querySelectorAll(`[data-ref]`);
 
-    document.addEventListener("click", () => {
-      this.count.value++;
-    });
+    for (const element of this.elements) {
+      if (this.varList.has(element["dataset"]["ref"])) {
+        this.varList.get(element["dataset"]["ref"]).push(element);
+      } else {
+        this.varList.set(element["dataset"]["ref"], [element]);
+      }
+    }
+    console.log(this.varList);
+
+    for (const variableName of this.varList.keys()) {
+      const elementsList = this.varList.get(variableName);
+      if (!elementsList) break;
+      for (const element of elementsList) {
+        let temp = {
+          _value: variables[variableName],
+          get value(): string {
+            return this._value;
+          },
+
+          set value(newValue: string) {
+            this._value = newValue;
+            element.textContent = this.value;
+          },
+        };
+        element.textContent = temp.value;
+      }
+    }
   }
 }
 
-const reactive_button = new Button(
-  document.querySelector<HTMLButtonElement>("#main-button")
-);
+let value = "text";
+let value2 = "test";
+
+new RefElements({
+  value: value,
+  value2: value2,
+});

@@ -1,27 +1,27 @@
-class trackChange {}
+// class trackChange {}
 
 class Element {
   value: {
-    volume: number;
+    _count: number;
     count: number;
   };
-  button: HTMLButtonElement;
-  constructor(button: HTMLButtonElement) {
+  element: HTMLElement;
+  constructor(element: HTMLElement) {
+    this.element = element;
+
     this.value = {
+      _count: 0,
       get count(): number {
-        return this.volume;
+        return this._count;
       },
 
       set count(value: number) {
-        this.volume = value;
-        document.querySelector("#main").textContent = "Count is: " + this.count;
+        this._count = value;
+        element.textContent = "Count is: " + this.count;
       },
     };
 
-    this.value.volume = 0;
-
-    this.button = button;
-    this.button.textContent = "Count is: " + this.value.count;
+    this.element.textContent = "Count is: " + this.value.count;
 
     document.addEventListener("click", () => {
       this.value.count++;
@@ -31,4 +31,5 @@ class Element {
   }
 }
 
-const button = new Element(document.querySelector("#main"));
+new Element(document.querySelector("#main"));
+new Element(document.querySelector("#main4"));
